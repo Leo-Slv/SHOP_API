@@ -1,4 +1,4 @@
-package Entity;
+package com.example.SHOP_API.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;

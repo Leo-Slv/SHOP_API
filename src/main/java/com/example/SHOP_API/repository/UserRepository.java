@@ -1,4 +1,4 @@
-package Repository;
+package com.example.SHOP_API.repository;
 
 import org.springframework.stereotype.Repository;
 
