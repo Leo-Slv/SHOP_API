@@ -1,7 +1,12 @@
 package com.example.SHOP_API.repository;
 
+import com.example.SHOP_API.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
-public interface UserRepository <User, UUID> {
+public interface UserRepository extends JpaRepository< User, UUID> {
+
 }
