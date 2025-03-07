@@ -12,7 +12,6 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @GeneratedValue( strategy = GenerationType.UUID )
     private UUID id ;
 
     @Column( name = "username" )
@@ -56,6 +55,8 @@ public class User {
 
     @UpdateTimestamp
     private Instant updateTimestamp;
+
+    public User() {}
 
     public User( UUID id, String username, String surname, String email, String telephone, String password, String cpf, String cep, String state, String city, String neighborhood, String street, String number, Instant creationTimestamp, Instant updateTimestamp ){
 

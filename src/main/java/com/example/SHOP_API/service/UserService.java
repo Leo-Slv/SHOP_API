@@ -3,10 +3,12 @@ package com.example.SHOP_API.service;
 import com.example.SHOP_API.controller.Dto.CreateUserDto;
 import com.example.SHOP_API.entity.User;
 import com.example.SHOP_API.repository.UserRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.UUID;
 
+@Service
 public class UserService {
 
     private UserRepository userRepository;
