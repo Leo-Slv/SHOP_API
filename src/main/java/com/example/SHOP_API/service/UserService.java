@@ -5,7 +5,9 @@ import com.example.SHOP_API.entity.User;
 import com.example.SHOP_API.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -38,5 +40,10 @@ public class UserService {
         var UserSaved = userRepository.save(Entity);
 
         return UserSaved.getId();
+    }
+
+    public Optional <User> getUserById (String id){
+
+        return userRepository.findById(UUID.fromString(id));
     }
 }

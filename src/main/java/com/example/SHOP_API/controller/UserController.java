@@ -6,10 +6,7 @@ import com.example.SHOP_API.entity.User;
 import com.example.SHOP_API.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -22,11 +19,22 @@ public class UserController {
     public UserController(UserService userService){ this.userService = userService; }
 
 @PostMapping()
-public ResponseEntity<User> createUser(@RequestBody CreateUserDto createUserDto) {
+public ResponseEntity<User> createUser (@RequestBody CreateUserDto createUserDto) {
 
     var userId = userService.createUser(createUserDto);
 
     return ResponseEntity.created(URI.create("/user/" + userId.toString())).build();
 }
 
+@GetMapping("/{id}")
+public ResponseEntity<User> getUserById (@PathVariable String id){
+
+        var user = userService.getUserById(id);
+        if(user.isPresent()){
+            return ResponseEntity.ok(user.get());
+        }
+        else{
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
