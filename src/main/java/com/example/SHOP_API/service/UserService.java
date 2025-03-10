@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -46,4 +47,6 @@ public class UserService {
 
         return userRepository.findById(UUID.fromString(id));
     }
+
+    public List<User> listUsers(){ return userRepository.findAll();}
 }
