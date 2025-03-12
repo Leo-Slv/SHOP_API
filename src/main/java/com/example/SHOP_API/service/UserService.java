@@ -1,6 +1,7 @@
 package com.example.SHOP_API.service;
 
 import com.example.SHOP_API.controller.Dto.CreateUserDto;
+import com.example.SHOP_API.controller.Dto.UpdateUserDto;
 import com.example.SHOP_API.entity.User;
 import com.example.SHOP_API.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -49,4 +50,57 @@ public class UserService {
     }
 
     public List<User> listUsers(){ return userRepository.findAll();}
+
+    public void updateUserById (String id,
+                                UpdateUserDto updateUserDto){
+
+        var userId = UUID.fromString(id);
+
+        var userEntity = userRepository.findById(userId);
+
+        if (userEntity.isPresent()){
+
+            var user = userEntity.get();
+
+
+            if ( updateUserDto.username() !=null ) {
+                user.setUsername(updateUserDto.username());
+            }
+
+            if ( updateUserDto.surname() !=null ) {
+                user.setSurname((updateUserDto.surname()));
+            }
+
+            if ( updateUserDto.password() != null ) {
+                user.setPassword(updateUserDto.password());
+            }
+
+            if ( updateUserDto.cep() != null ) {
+                user.setCep(updateUserDto.cep());
+            }
+
+            if ( updateUserDto.state() != null ){
+                user.setState(updateUserDto.state());
+            }
+
+            if ( updateUserDto.city() != null ){
+                user.setCity(updateUserDto.city());
+            }
+
+            if ( updateUserDto.neighborhood() != null ){
+                user.setNeighborhood(updateUserDto.neighborhood());
+            }
+
+            if ( updateUserDto.street() != null ){
+                user.setStreet(updateUserDto.street());
+            }
+
+            if ( updateUserDto.number() != null ){
+                user.setNumber(updateUserDto.number());
+            }
+
+            userRepository.save(user);
+
+        }
+    }
 }

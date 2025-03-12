@@ -2,6 +2,7 @@ package com.example.SHOP_API.controller;
 
 
 import com.example.SHOP_API.controller.Dto.CreateUserDto;
+import com.example.SHOP_API.controller.Dto.UpdateUserDto;
 import com.example.SHOP_API.entity.User;
 import com.example.SHOP_API.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -46,4 +47,14 @@ public ResponseEntity<User> getUserById (@PathVariable String id){
 
         return ResponseEntity.ok(users);
 }
+
+@PutMapping("/{id}")
+
+    public ResponseEntity<Void> updateUserById (@PathVariable("id") String id,
+                                                @RequestBody UpdateUserDto updateUserDto){
+
+        userService.updateUserById(id , updateUserDto);
+
+        return ResponseEntity.noContent().build();
+    }
 }
