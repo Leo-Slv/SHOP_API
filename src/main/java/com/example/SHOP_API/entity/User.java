@@ -2,7 +2,9 @@ package com.example.SHOP_API.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -12,7 +14,9 @@ import java.util.UUID;
 public class User {
 
     @Id
-    private UUID id ;
+    @Column(name = "id", updatable = false, nullable = false)
+    @JdbcTypeCode(SqlTypes.BINARY)
+    private UUID id;
 
     @Column( name = "username" )
     private String username;

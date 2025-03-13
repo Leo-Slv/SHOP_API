@@ -103,4 +103,15 @@ public class UserService {
 
         }
     }
+
+    public void deleteUserById (String id){
+
+        var userId = UUID.fromString(id);
+
+        var userExists = userRepository.existsById(userId);
+
+        if ( userExists ){
+            userRepository.deleteById(userId);
+        }
+    }
 }

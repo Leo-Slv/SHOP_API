@@ -57,4 +57,13 @@ public ResponseEntity<User> getUserById (@PathVariable String id){
 
         return ResponseEntity.noContent().build();
     }
+
+@DeleteMapping("/{id}")
+
+    public ResponseEntity<Void> deleteUserById (@PathVariable("id") String id) {
+
+        userService.deleteUserById(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }
