@@ -101,5 +101,49 @@ class UserServiceTest {
         }
     }
 
+    @Test
+    @DisplayName("Should throw exception when error occurs")
+    void shouldThrowExceptionWhenErrorOccurs (){
+
+        //Arrange
+        var user = new User(
+                UUID.randomUUID(),
+                "name",
+                "surname",
+                "mail@mail.com",
+                "123456789",
+                "password",
+                "987654321",
+                "246810",
+                "state",
+                "city",
+                "neighborhood",
+                "street",
+                "number",
+                Instant.now(),
+                null
+        );
+
+        doThrow(new RuntimeException()).when(userRepository).save(any());
+
+        var input = new CreateUserDto(
+                "name",
+                "surname",
+                "email@mail.com",
+                "123456789",
+                "password",
+                "987654321",
+                "246810",
+                "state",
+                "city",
+                "neighborhood",
+                "street",
+                "number"
+        );
+
+        //Act & Assert
+        assertThrows(RuntimeException.class, () -> userService.createUser(input));
+    }
+
 
 }
