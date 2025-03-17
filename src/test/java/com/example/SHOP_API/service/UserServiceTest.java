@@ -18,6 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -145,5 +146,42 @@ class UserServiceTest {
         assertThrows(RuntimeException.class, () -> userService.createUser(input));
     }
 
+    @Nested
+    class getUserById{
 
+    @DisplayName("Should get user by id with success when optional is present")
+    @Test
+    void shouldGetUserByIdWithSuccessWhenOptionalIsPresent(){
+
+        //Arrange
+        var user = new User(
+                UUID.randomUUID(),
+                "name",
+                "surname",
+                "mail@mail.com",
+                "123456789",
+                "password",
+                "987654321",
+                "246810",
+                "state",
+                "city",
+                "neighborhood",
+                "street",
+                "number",
+                Instant.now(),
+                null
+        );
+
+        doReturn(Optional.of(user))
+                .when(userRepository)
+                .findById(uuidArgumentCaptor.capture());
+
+        //Act
+        var output = userService.getUserById(user.getId().toString());
+
+        //Assert
+        assertTrue(output.isPresent());
+        assertEquals(user.getId(),uuidArgumentCaptor.getValue());
+        }
+    }
 }
