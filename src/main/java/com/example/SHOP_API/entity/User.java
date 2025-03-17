@@ -54,6 +54,9 @@ public class User {
     @Column( name = "number")
     private String number;
 
+    @Column ( name = "isAdmin")
+    private boolean isAdmin;
+
     @CreationTimestamp
     private Instant creationTimestamp;
 
@@ -62,7 +65,7 @@ public class User {
 
     public User() {}
 
-    public User( UUID id, String username, String surname, String email, String telephone, String password, String cpf, String cep, String state, String city, String neighborhood, String street, String number, Instant creationTimestamp, Instant updateTimestamp ){
+    public User( UUID id, String username, String surname, String email, String telephone, String password, String cpf, String cep, String state, String city, String neighborhood, String street, String number, boolean isAdmin, Instant creationTimestamp, Instant updateTimestamp ){
 
         this.id = id;
         this.username = username;
@@ -77,6 +80,7 @@ public class User {
         this.neighborhood = neighborhood;
         this.street = street;
         this.number = number;
+        this.isAdmin = isAdmin;
         this.creationTimestamp = creationTimestamp;
         this.updateTimestamp = updateTimestamp;
 
@@ -184,6 +188,14 @@ public class User {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     public Instant getCreationTimestamp() {

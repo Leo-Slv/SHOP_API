@@ -59,6 +59,7 @@ class UserServiceTest {
                     "neighborhood",
                     "street",
                     "number",
+                    false,
                     Instant.now(),
                     null
             );
@@ -121,6 +122,7 @@ class UserServiceTest {
                 "neighborhood",
                 "street",
                 "number",
+                false,
                 Instant.now(),
                 null
         );
@@ -168,6 +170,7 @@ class UserServiceTest {
                 "neighborhood",
                 "street",
                 "number",
+                false,
                 Instant.now(),
                 null
         );

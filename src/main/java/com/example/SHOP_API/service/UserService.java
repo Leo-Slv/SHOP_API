@@ -36,6 +36,7 @@ public class UserService {
                 createUserDto.neighborhood(),
                 createUserDto.street(),
                 createUserDto.number(),
+                false,
                 Instant.now(),
                 null);
 
