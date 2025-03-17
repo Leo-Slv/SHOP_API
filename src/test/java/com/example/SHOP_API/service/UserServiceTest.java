@@ -18,6 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -204,6 +205,49 @@ class UserServiceTest {
             //Assert
             assertTrue(output.isEmpty());
             assertEquals(userId, uuidArgumentCaptor.getValue());
+        }
+    }
+
+    @Nested
+    class listUsers{
+
+
+        @Test
+        @DisplayName("Should return all users with success")
+        void shouldReturnAllUsersWithSuccess(){
+
+            //Arrange
+            var user = new User(
+                    UUID.randomUUID(),
+                    "name",
+                    "surname",
+                    "mail@mail.com",
+                    "123456789",
+                    "password",
+                    "987654321",
+                    "246810",
+                    "state",
+                    "city",
+                    "neighborhood",
+                    "street",
+                    "number",
+                    false,
+                    Instant.now(),
+                    null
+            );
+
+            var userList = List.of(user);
+
+            doReturn(List.of(user))
+                    .when(userRepository)
+                    .findAll();
+
+            //Act
+            var output = userService.listUsers();
+
+            //Assert
+            assertNotNull(output);
+            assertEquals(userList.size(), output.size());
         }
     }
 }
