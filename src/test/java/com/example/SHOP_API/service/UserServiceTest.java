@@ -250,4 +250,18 @@ class UserServiceTest {
             assertEquals(userList.size(), output.size());
         }
     }
+
+    @Nested
+    class deleteById{
+
+        @Test
+        @DisplayName("should delete user with success when user exists")
+        void shouldDeleteUserWithSuccessWhenUserExists(){
+
+            //Arrange
+            doReturn(true)
+                    .when(userRepository)
+                    .existsById(uuidArgumentCaptor.capture());
+        }
+    }
 }

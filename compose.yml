@@ -1,11 +1,15 @@
-#services:
-  #mysql:
-   # container_name: 'guide-mysql'
-    #image: 'mysql:latest'
-    #environment:
-    #  - 'MYSQL_DATABASE=shop_api'
-    #  - 'MYSQL_PASSWORD=Db@User2025!'
-    #  - 'MYSQL_ROOT_PASSWORD=password'
-     # - 'MYSQL_USER=dev_app_user'
-    #ports:
-    #  - '3306:3306'
+name: postgres-db
+services:
+  postgres:
+    container_name: 'db_shop'
+    image: 'postgres:latest'
+    environment:
+      - 'POSTGRES_DB=shop_api'
+      - 'POSTGRES_PASSWORD=Db@User2025!'
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
