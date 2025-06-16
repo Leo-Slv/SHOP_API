@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,6 +25,9 @@ public class UserService {
 
     public UUID createUser(CreateUserDto createUserDto){
 
+        LocalDate birthDate = LocalDate.parse(createUserDto.birthDate());
+        String statusActivted = "ACTIVE";
+
         var Entity = new User( UUID.randomUUID(),
                 createUserDto.username(),
                 createUserDto.surname(),
@@ -37,6 +42,11 @@ public class UserService {
                 createUserDto.street(),
                 createUserDto.number(),
                 false,
+                birthDate,
+                createUserDto.gender(),
+                false,
+                false,
+                statusActivted,
                 Instant.now(),
                 null);
 
@@ -98,6 +108,30 @@ public class UserService {
 
             if ( updateUserDto.number() != null ){
                 user.setNumber(updateUserDto.number());
+            }
+
+            if (updateUserDto.birthDate() != null && !updateUserDto.birthDate().trim().isEmpty()) {
+                try {
+                    LocalDate birthDate = LocalDate.parse(updateUserDto.birthDate().trim());
+
+                    // Validações de negócio
+                    if (birthDate.isAfter(LocalDate.now())) {
+                        throw new IllegalArgumentException("Data de nascimento não pode ser no futuro");
+                    }
+
+                    if (birthDate.isBefore(LocalDate.now().minusYears(120))) {
+                        throw new IllegalArgumentException("Data de nascimento não pode ser há mais de 120 anos");
+                    }
+
+                    user.setBirthDate(birthDate);
+
+                } catch (DateTimeParseException e) {
+                    throw new IllegalArgumentException("Formato de data inválido. Use yyyy-MM-dd (ex: 1990-05-15)");
+                }
+            }
+
+            if ( updateUserDto.gender() != null){
+                user.setGender(updateUserDto.gender());
             }
 
             userRepository.save(user);

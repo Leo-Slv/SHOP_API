@@ -7,6 +7,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -57,6 +59,21 @@ public class User {
     @Column ( name = "isAdmin")
     private boolean isAdmin;
 
+    @Column(name = "birth_date")
+    private LocalDate birthDate;
+
+    @Column(name = "gender", length = 20)
+    private String gender; // "MALE", "FEMALE", "OTHER", "PREFER_NOT_TO_SAY"
+
+    @Column ( name = "phone_verified")
+    private boolean phone_verified;
+
+    @Column ( name = "email_verified")
+    private boolean email_verified;
+
+    @Column ( name = "status")
+    private String status;
+
     @CreationTimestamp
     private Instant creationTimestamp;
 
@@ -65,7 +82,7 @@ public class User {
 
     public User() {}
 
-    public User( UUID id, String username, String surname, String email, String telephone, String password, String cpf, String cep, String state, String city, String neighborhood, String street, String number, boolean isAdmin, Instant creationTimestamp, Instant updateTimestamp ){
+    public User( UUID id, String username, String surname, String email, String telephone, String password, String cpf, String cep, String state, String city, String neighborhood, String street, String number, boolean isAdmin, LocalDate birthDate, String gender, boolean phone_verified, boolean email_verified,  String status, Instant creationTimestamp, Instant updateTimestamp ){
 
         this.id = id;
         this.username = username;
@@ -81,8 +98,14 @@ public class User {
         this.street = street;
         this.number = number;
         this.isAdmin = isAdmin;
+        this.birthDate = birthDate;
+        this.gender = gender;
+        this.phone_verified = phone_verified;
+        this.email_verified = email_verified;
+        this.status = status;
         this.creationTimestamp = creationTimestamp;
         this.updateTimestamp = updateTimestamp;
+
 
     }
 
@@ -196,6 +219,46 @@ public class User {
 
     public void setAdmin(boolean admin) {
         isAdmin = admin;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public boolean isPhone_verified() {
+        return phone_verified;
+    }
+
+    public void setPhone_verified(boolean phone_verified) {
+        this.phone_verified = phone_verified;
+    }
+
+    public boolean isEmail_verified() {
+        return email_verified;
+    }
+
+    public void setEmail_verified(boolean email_verified) {
+        this.email_verified = email_verified;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Instant getCreationTimestamp() {

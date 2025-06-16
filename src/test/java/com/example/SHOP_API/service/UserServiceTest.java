@@ -18,6 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -46,6 +47,8 @@ class UserServiceTest {
         void shouldCreateAUserWithSuccess() {
 
             //Arrange
+            LocalDate birthDate = LocalDate.of(1990, 5, 15);
+
             var user = new User(
                     UUID.randomUUID(),
                     "name",
@@ -61,16 +64,22 @@ class UserServiceTest {
                     "street",
                     "number",
                     false,
+                    birthDate,
+                    "MALE",
+                    false,
+                    false,
+                    "ACTIVE",
                     Instant.now(),
                     null
             );
 
             doReturn(user).when(userRepository).save(userArgumentCaptor.capture());
 
+
             var input = new CreateUserDto(
                     "name",
                     "surname",
-                    "email@mail.com",
+                    "mail@mail.com",
                     "123456789",
                     "password",
                     "987654321",
@@ -79,7 +88,10 @@ class UserServiceTest {
                     "city",
                     "neighborhood",
                     "street",
-                    "number"
+                    "number",
+                    "1990-05-15",
+                    "MALE"
+
                     );
 
             //Act
@@ -109,6 +121,8 @@ class UserServiceTest {
     void shouldThrowExceptionWhenErrorOccurs (){
 
         //Arrange
+        LocalDate birthDate = LocalDate.of(1990, 5, 15);
+
         var user = new User(
                 UUID.randomUUID(),
                 "name",
@@ -124,6 +138,11 @@ class UserServiceTest {
                 "street",
                 "number",
                 false,
+                birthDate,
+                "MALE",
+                false,
+                false,
+                "ACTIVE",
                 Instant.now(),
                 null
         );
@@ -133,7 +152,7 @@ class UserServiceTest {
         var input = new CreateUserDto(
                 "name",
                 "surname",
-                "email@mail.com",
+                "mail@mail.com",
                 "123456789",
                 "password",
                 "987654321",
@@ -142,7 +161,9 @@ class UserServiceTest {
                 "city",
                 "neighborhood",
                 "street",
-                "number"
+                "number",
+                "1990-05-15",
+                "MALE"
         );
 
         //Act & Assert
@@ -157,6 +178,8 @@ class UserServiceTest {
     void shouldGetUserByIdWithSuccessWhenOptionalIsPresent(){
 
         //Arrange
+        LocalDate birthDate = LocalDate.of(1990, 5, 15);
+
         var user = new User(
                 UUID.randomUUID(),
                 "name",
@@ -172,6 +195,11 @@ class UserServiceTest {
                 "street",
                 "number",
                 false,
+                birthDate,
+                "MALE",
+                false,
+                false,
+                "ACTIVE",
                 Instant.now(),
                 null
         );
@@ -217,6 +245,8 @@ class UserServiceTest {
         void shouldReturnAllUsersWithSuccess(){
 
             //Arrange
+            LocalDate birthDate = LocalDate.of(1990, 5, 15);
+
             var user = new User(
                     UUID.randomUUID(),
                     "name",
@@ -232,6 +262,11 @@ class UserServiceTest {
                     "street",
                     "number",
                     false,
+                    birthDate,
+                    "MALE",
+                    false,
+                    false,
+                    "ACTIVE",
                     Instant.now(),
                     null
             );
