@@ -1,12 +1,11 @@
 package com.example.SHOP_API.controller;
 
 
-import com.example.SHOP_API.controller.Dto.CreateUserDto;
-import com.example.SHOP_API.controller.Dto.UpdateUserDto;
+import com.example.SHOP_API.controller.dto.CreateUserDto;
+import com.example.SHOP_API.controller.dto.UpdateUserDto;
 import com.example.SHOP_API.entity.User;
 import com.example.SHOP_API.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;

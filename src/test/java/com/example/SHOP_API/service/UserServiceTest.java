@@ -1,6 +1,6 @@
 package com.example.SHOP_API.service;
 
-import com.example.SHOP_API.controller.Dto.CreateUserDto;
+import com.example.SHOP_API.controller.dto.CreateUserDto;
 import com.example.SHOP_API.entity.User;
 import com.example.SHOP_API.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;

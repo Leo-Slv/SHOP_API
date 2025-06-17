@@ -1,12 +1,11 @@
 package com.example.SHOP_API.service;
 
-import com.example.SHOP_API.controller.Dto.CreateUserDto;
-import com.example.SHOP_API.controller.Dto.UpdateUserDto;
+import com.example.SHOP_API.controller.dto.CreateUserDto;
+import com.example.SHOP_API.controller.dto.UpdateUserDto;
 import com.example.SHOP_API.entity.User;
 import com.example.SHOP_API.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -26,7 +25,7 @@ public class UserService {
     public UUID createUser(CreateUserDto createUserDto){
 
         LocalDate birthDate = LocalDate.parse(createUserDto.birthDate());
-        String statusActivted = "ACTIVE";
+        String statusActivated= "ACTIVE";
 
         var Entity = new User( UUID.randomUUID(),
                 createUserDto.username(),
@@ -46,7 +45,7 @@ public class UserService {
                 createUserDto.gender(),
                 false,
                 false,
-                statusActivted,
+                statusActivated,
                 Instant.now(),
                 null);
 
