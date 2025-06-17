@@ -2,32 +2,28 @@ package com.example.SHOP_API.service;
 
 import com.example.SHOP_API.controller.dto.CreateUserDto;
 import com.example.SHOP_API.controller.dto.UpdateUserDto;
+import com.example.SHOP_API.controller.dto.response.UserResponseDto;
 import com.example.SHOP_API.entity.User;
+import com.example.SHOP_API.exception.UserNotFoundException;
 import com.example.SHOP_API.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    public UUID createUser(CreateUserDto createUserDto){
-
-        LocalDate birthDate = LocalDate.parse(createUserDto.birthDate());
-        String statusActivated= "ACTIVE";
-
-        var Entity = new User( UUID.randomUUID(),
+    public UserResponseDto createUser(CreateUserDto createUserDto) {
+        var entity = new User(
+                UUID.randomUUID(),
                 createUserDto.username(),
                 createUserDto.surname(),
                 createUserDto.email(),
@@ -40,112 +36,83 @@ public class UserService {
                 createUserDto.neighborhood(),
                 createUserDto.street(),
                 createUserDto.number(),
-                false,
-                birthDate,
+                false, // isAdmin sempre false para novos usuários
+                createUserDto.birthDate(),
                 createUserDto.gender(),
-                false,
-                false,
-                statusActivated,
+                false, // phone_verified inicialmente false
+                false, // email_verified inicialmente false
+                "ACTIVE", // status padrão como ACTIVE
                 Instant.now(),
-                null);
+                null
+        );
 
-        var UserSaved = userRepository.save(Entity);
-
-        return UserSaved.getId();
+        var savedUser = userRepository.save(entity);
+        return UserResponseDto.fromEntity(savedUser);
     }
 
-    public Optional <User> getUserById (String id){
-
-        return userRepository.findById(UUID.fromString(id));
+    public UserResponseDto getUserById(String id) {
+        User user = userRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new UserNotFoundException(id, "id"));
+        return UserResponseDto.fromEntity(user);
     }
 
-    public List<User> listUsers(){ return userRepository.findAll();}
+    public List<UserResponseDto> listUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(UserResponseDto::fromEntityPublic) // Usa versão pública para listagem
+                .toList();
+    }
 
-    public void updateUserById (String id,
-                                UpdateUserDto updateUserDto){
-
+    public UserResponseDto updateUserById(String id, UpdateUserDto updateUserDto) {
         var userId = UUID.fromString(id);
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(id, "id"));
 
-        var userEntity = userRepository.findById(userId);
-
-        if (userEntity.isPresent()){
-
-            var user = userEntity.get();
-
-
-            if ( updateUserDto.username() !=null ) {
-                user.setUsername(updateUserDto.username());
-            }
-
-            if ( updateUserDto.surname() !=null ) {
-                user.setSurname((updateUserDto.surname()));
-            }
-
-            if ( updateUserDto.password() != null ) {
-                user.setPassword(updateUserDto.password());
-            }
-
-            if ( updateUserDto.cep() != null ) {
-                user.setCep(updateUserDto.cep());
-            }
-
-            if ( updateUserDto.state() != null ){
-                user.setState(updateUserDto.state());
-            }
-
-            if ( updateUserDto.city() != null ){
-                user.setCity(updateUserDto.city());
-            }
-
-            if ( updateUserDto.neighborhood() != null ){
-                user.setNeighborhood(updateUserDto.neighborhood());
-            }
-
-            if ( updateUserDto.street() != null ){
-                user.setStreet(updateUserDto.street());
-            }
-
-            if ( updateUserDto.number() != null ){
-                user.setNumber(updateUserDto.number());
-            }
-
-            if (updateUserDto.birthDate() != null && !updateUserDto.birthDate().trim().isEmpty()) {
-                try {
-                    LocalDate birthDate = LocalDate.parse(updateUserDto.birthDate().trim());
-
-                    // Validações de negócio
-                    if (birthDate.isAfter(LocalDate.now())) {
-                        throw new IllegalArgumentException("Data de nascimento não pode ser no futuro");
-                    }
-
-                    if (birthDate.isBefore(LocalDate.now().minusYears(120))) {
-                        throw new IllegalArgumentException("Data de nascimento não pode ser há mais de 120 anos");
-                    }
-
-                    user.setBirthDate(birthDate);
-
-                } catch (DateTimeParseException e) {
-                    throw new IllegalArgumentException("Formato de data inválido. Use yyyy-MM-dd (ex: 1990-05-15)");
-                }
-            }
-
-            if ( updateUserDto.gender() != null){
-                user.setGender(updateUserDto.gender());
-            }
-
-            userRepository.save(user);
-
+        // Atualiza apenas campos não nulos do UpdateUserDto
+        if (updateUserDto.username() != null) {
+            user.setUsername(updateUserDto.username());
         }
+        if (updateUserDto.surname() != null) {
+            user.setSurname(updateUserDto.surname());
+        }
+        if (updateUserDto.password() != null) {
+            user.setPassword(updateUserDto.password());
+        }
+        if (updateUserDto.cep() != null) {
+            user.setCep(updateUserDto.cep());
+        }
+        if (updateUserDto.state() != null) {
+            user.setState(updateUserDto.state());
+        }
+        if (updateUserDto.city() != null) {
+            user.setCity(updateUserDto.city());
+        }
+        if (updateUserDto.neighborhood() != null) {
+            user.setNeighborhood(updateUserDto.neighborhood());
+        }
+        if (updateUserDto.street() != null) {
+            user.setStreet(updateUserDto.street());
+        }
+        if (updateUserDto.number() != null) {
+            user.setNumber(updateUserDto.number());
+        }
+        if (updateUserDto.birthDate() != null) {
+            user.setBirthDate(updateUserDto.birthDate());
+        }
+        if (updateUserDto.gender() != null) {
+            user.setGender(updateUserDto.gender());
+        }
+
+        // Atualiza automaticamente o timestamp de atualização (se usando @UpdateTimestamp)
+        var updatedUser = userRepository.save(user);
+        return UserResponseDto.fromEntity(updatedUser);
     }
 
-    public void deleteUserById (String id){
-
+    public void deleteUserById(String id) {
         var userId = UUID.fromString(id);
-
-        var userExists = userRepository.existsById(userId);
-
-        if ( userExists ){
-            userRepository.deleteById(userId);
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundException(id, "id");
         }
+        userRepository.deleteById(userId);
     }
 }

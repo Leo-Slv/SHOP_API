@@ -1,7 +1,10 @@
 package com.example.SHOP_API.service;
 
 import com.example.SHOP_API.controller.dto.CreateUserDto;
+import com.example.SHOP_API.controller.dto.UpdateUserDto;
+import com.example.SHOP_API.controller.dto.response.UserResponseDto;
 import com.example.SHOP_API.entity.User;
+import com.example.SHOP_API.exception.UserNotFoundException;
 import com.example.SHOP_API.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,13 +19,11 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -47,8 +48,6 @@ class UserServiceTest {
         void shouldCreateAUserWithSuccess() {
 
             //Arrange
-            LocalDate birthDate = LocalDate.of(1990, 5, 15);
-
             var user = new User(
                     UUID.randomUUID(),
                     "name",
@@ -64,7 +63,7 @@ class UserServiceTest {
                     "street",
                     "number",
                     false,
-                    birthDate,
+                    LocalDate.of(1990, 5, 15),
                     "MALE",
                     false,
                     false,
@@ -75,11 +74,10 @@ class UserServiceTest {
 
             doReturn(user).when(userRepository).save(userArgumentCaptor.capture());
 
-
             var input = new CreateUserDto(
                     "name",
                     "surname",
-                    "mail@mail.com",
+                    "email@mail.com",
                     "123456789",
                     "password",
                     "987654321",
@@ -89,16 +87,16 @@ class UserServiceTest {
                     "neighborhood",
                     "street",
                     "number",
-                    "1990-05-15",
+                    LocalDate.of(1990, 5, 15),
                     "MALE"
-
-                    );
+            );
 
             //Act
             var output = userService.createUser(input);
 
             //Assert
             assertNotNull(output);
+            assertInstanceOf(UserResponseDto.class, output);
 
             var userCaptured = userArgumentCaptor.getValue();
 
@@ -112,141 +110,48 @@ class UserServiceTest {
             assertEquals(input.state(), userCaptured.getState());
             assertEquals(input.city(), userCaptured.getCity());
             assertEquals(input.neighborhood(), userCaptured.getNeighborhood());
-
-        }
-    }
-
-    @Test
-    @DisplayName("Should throw exception when error occurs")
-    void shouldThrowExceptionWhenErrorOccurs (){
-
-        //Arrange
-        LocalDate birthDate = LocalDate.of(1990, 5, 15);
-
-        var user = new User(
-                UUID.randomUUID(),
-                "name",
-                "surname",
-                "mail@mail.com",
-                "123456789",
-                "password",
-                "987654321",
-                "246810",
-                "state",
-                "city",
-                "neighborhood",
-                "street",
-                "number",
-                false,
-                birthDate,
-                "MALE",
-                false,
-                false,
-                "ACTIVE",
-                Instant.now(),
-                null
-        );
-
-        doThrow(new RuntimeException()).when(userRepository).save(any());
-
-        var input = new CreateUserDto(
-                "name",
-                "surname",
-                "mail@mail.com",
-                "123456789",
-                "password",
-                "987654321",
-                "246810",
-                "state",
-                "city",
-                "neighborhood",
-                "street",
-                "number",
-                "1990-05-15",
-                "MALE"
-        );
-
-        //Act & Assert
-        assertThrows(RuntimeException.class, () -> userService.createUser(input));
-    }
-
-    @Nested
-    class getUserById{
-
-    @DisplayName("Should get user by id with success when optional is present")
-    @Test
-    void shouldGetUserByIdWithSuccessWhenOptionalIsPresent(){
-
-        //Arrange
-        LocalDate birthDate = LocalDate.of(1990, 5, 15);
-
-        var user = new User(
-                UUID.randomUUID(),
-                "name",
-                "surname",
-                "mail@mail.com",
-                "123456789",
-                "password",
-                "987654321",
-                "246810",
-                "state",
-                "city",
-                "neighborhood",
-                "street",
-                "number",
-                false,
-                birthDate,
-                "MALE",
-                false,
-                false,
-                "ACTIVE",
-                Instant.now(),
-                null
-        );
-
-        doReturn(Optional.of(user))
-                .when(userRepository)
-                .findById(uuidArgumentCaptor.capture());
-
-        //Act
-        var output = userService.getUserById(user.getId().toString());
-
-        //Assert
-        assertTrue(output.isPresent());
-        assertEquals(user.getId(), uuidArgumentCaptor.getValue());
+            assertEquals(input.street(), userCaptured.getStreet());
+            assertEquals(input.number(), userCaptured.getNumber());
+            assertEquals(input.birthDate(), userCaptured.getBirthDate());
+            assertEquals(input.gender(), userCaptured.getGender());
         }
 
-        @DisplayName("Should get user by id with success when optional is empty")
         @Test
-        void shouldGetUserByIdWithSuccessWhenOptionalIsEmpty(){
+        @DisplayName("Should throw exception when error occurs")
+        void shouldThrowExceptionWhenErrorOccurs() {
 
-            //Arrange
-            var userId = UUID.randomUUID();
+            doThrow(new RuntimeException()).when(userRepository).save(any());
 
-            doReturn(Optional.empty())
-                    .when(userRepository)
-                    .findById(uuidArgumentCaptor.capture());
+            var input = new CreateUserDto(
+                    "name",
+                    "surname",
+                    "email@mail.com",
+                    "123456789",
+                    "password",
+                    "987654321",
+                    "246810",
+                    "state",
+                    "city",
+                    "neighborhood",
+                    "street",
+                    "number",
+                    LocalDate.of(1990, 5, 15),
+                    "MALE"
+            );
 
-            //Act
-            var output = userService.getUserById(userId.toString());
-
-            //Assert
-            assertTrue(output.isEmpty());
-            assertEquals(userId, uuidArgumentCaptor.getValue());
+            //Act & Assert
+            assertThrows(RuntimeException.class, () -> userService.createUser(input));
         }
     }
 
     @Nested
-    class listUsers{
+    class getUserById {
 
-
+        @DisplayName("Should get user by id with success when user exists")
         @Test
-        @DisplayName("Should return all users with success")
-        void shouldReturnAllUsersWithSuccess(){
+        void shouldGetUserByIdWithSuccessWhenUserExists() {
 
             //Arrange
-            LocalDate birthDate = LocalDate.of(1990, 5, 15);
-
             var user = new User(
                     UUID.randomUUID(),
                     "name",
@@ -262,7 +167,72 @@ class UserServiceTest {
                     "street",
                     "number",
                     false,
-                    birthDate,
+                    LocalDate.of(1990, 5, 15),
+                    "MALE",
+                    false,
+                    false,
+                    "ACTIVE",
+                    Instant.now(),
+                    null
+            );
+
+            doReturn(Optional.of(user))
+                    .when(userRepository)
+                    .findById(uuidArgumentCaptor.capture());
+
+            //Act
+            var output = userService.getUserById(user.getId().toString());
+
+            //Assert
+            assertNotNull(output);
+            assertInstanceOf(UserResponseDto.class, output);
+            assertEquals(user.getId(), uuidArgumentCaptor.getValue());
+            assertEquals(user.getUsername(), output.username());
+            assertEquals(user.getEmail(), output.email());
+        }
+
+        @DisplayName("Should throw UserNotFoundException when user does not exist")
+        @Test
+        void shouldThrowUserNotFoundExceptionWhenUserDoesNotExist() {
+
+            //Arrange
+            var userId = UUID.randomUUID();
+
+            doReturn(Optional.empty())
+                    .when(userRepository)
+                    .findById(uuidArgumentCaptor.capture());
+
+            //Act & Assert
+            assertThrows(UserNotFoundException.class,
+                    () -> userService.getUserById(userId.toString()));
+            assertEquals(userId, uuidArgumentCaptor.getValue());
+        }
+    }
+
+    @Nested
+    class listUsers {
+
+        @Test
+        @DisplayName("Should return all users with success")
+        void shouldReturnAllUsersWithSuccess() {
+
+            //Arrange
+            var user = new User(
+                    UUID.randomUUID(),
+                    "name",
+                    "surname",
+                    "mail@mail.com",
+                    "123456789",
+                    "password",
+                    "987654321",
+                    "246810",
+                    "state",
+                    "city",
+                    "neighborhood",
+                    "street",
+                    "number",
+                    false,
+                    LocalDate.of(1990, 5, 15),
                     "MALE",
                     false,
                     false,
@@ -273,7 +243,7 @@ class UserServiceTest {
 
             var userList = List.of(user);
 
-            doReturn(List.of(user))
+            doReturn(userList)
                     .when(userRepository)
                     .findAll();
 
@@ -283,20 +253,141 @@ class UserServiceTest {
             //Assert
             assertNotNull(output);
             assertEquals(userList.size(), output.size());
+            assertInstanceOf(List.class, output);
+            // Verifica se todos os elementos são UserResponseDto
+            assertTrue(output.stream().allMatch(dto -> dto instanceof UserResponseDto));
         }
     }
 
     @Nested
-    class deleteById{
+    class updateUserById {
 
         @Test
-        @DisplayName("should delete user with success when user exists")
-        void shouldDeleteUserWithSuccessWhenUserExists(){
+        @DisplayName("Should update user with success when user exists")
+        void shouldUpdateUserWithSuccessWhenUserExists() {
 
             //Arrange
+            var userId = UUID.randomUUID();
+            var existingUser = new User(
+                    userId,
+                    "oldName",
+                    "oldSurname",
+                    "old@mail.com",
+                    "123456789",
+                    "password",
+                    "987654321",
+                    "246810",
+                    "state",
+                    "city",
+                    "neighborhood",
+                    "street",
+                    "number",
+                    false,
+                    LocalDate.of(1990, 5, 15),
+                    "MALE",
+                    false,
+                    false,
+                    "ACTIVE",
+                    Instant.now(),
+                    null
+            );
+
+            var updateDto = new UpdateUserDto(
+                    "newName",
+                    "newSurname",
+                    null, // password não alterado
+                    null, // cep não alterado
+                    null, // state não alterado
+                    null, // city não alterado
+                    null, // neighborhood não alterado
+                    null, // street não alterado
+                    null, // number não alterado
+                    LocalDate.of(1985, 10, 20),
+                    "FEMALE"
+            );
+
+            doReturn(Optional.of(existingUser))
+                    .when(userRepository)
+                    .findById(userId);
+
+            doReturn(existingUser)
+                    .when(userRepository)
+                    .save(userArgumentCaptor.capture());
+
+            //Act
+            var output = userService.updateUserById(userId.toString(), updateDto);
+
+            //Assert
+            assertNotNull(output);
+            assertInstanceOf(UserResponseDto.class, output);
+
+            var savedUser = userArgumentCaptor.getValue();
+            assertEquals("newName", savedUser.getUsername());
+            assertEquals("newSurname", savedUser.getSurname());
+            assertEquals(LocalDate.of(1985, 10, 20), savedUser.getBirthDate());
+            assertEquals("FEMALE", savedUser.getGender());
+        }
+
+        @Test
+        @DisplayName("Should throw UserNotFoundException when user does not exist")
+        void shouldThrowUserNotFoundExceptionWhenUserDoesNotExist() {
+
+            //Arrange
+            var userId = UUID.randomUUID();
+            var updateDto = new UpdateUserDto(
+                    "newName", null, null, null, null, null, null, null, null, null, null
+            );
+
+            doReturn(Optional.empty())
+                    .when(userRepository)
+                    .findById(userId);
+
+            //Act & Assert
+            assertThrows(UserNotFoundException.class,
+                    () -> userService.updateUserById(userId.toString(), updateDto));
+        }
+    }
+
+    @Nested
+    class deleteById {
+
+        @Test
+        @DisplayName("Should delete user with success when user exists")
+        void shouldDeleteUserWithSuccessWhenUserExists() {
+
+            //Arrange
+            var userId = UUID.randomUUID();
+
             doReturn(true)
                     .when(userRepository)
                     .existsById(uuidArgumentCaptor.capture());
+
+            doNothing()
+                    .when(userRepository)
+                    .deleteById(userId);
+
+            //Act
+            userService.deleteUserById(userId.toString());
+
+            //Assert
+            assertEquals(userId, uuidArgumentCaptor.getValue());
+            verify(userRepository, times(1)).deleteById(userId);
+        }
+
+        @Test
+        @DisplayName("Should throw UserNotFoundException when user does not exist")
+        void shouldThrowUserNotFoundExceptionWhenUserDoesNotExist() {
+
+            //Arrange
+            var userId = UUID.randomUUID();
+
+            doReturn(false)
+                    .when(userRepository)
+                    .existsById(userId);
+
+            //Act & Assert
+            assertThrows(UserNotFoundException.class,
+                    () -> userService.deleteUserById(userId.toString()));
         }
     }
 }

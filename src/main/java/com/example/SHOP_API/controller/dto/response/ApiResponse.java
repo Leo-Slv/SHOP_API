@@ -12,8 +12,8 @@ public class ApiResponse<T> {
     private Instant timestamp;
     private String path;
 
-    // Construtores privados
-    private ApiResponse(boolean success, String message, T data, String error, String path) {
+    // Construtor privado
+    public ApiResponse(boolean success, String message, T data, String error, String path) {
         this.success = success;
         this.message = message;
         this.data = data;
