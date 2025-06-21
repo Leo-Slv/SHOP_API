@@ -23,7 +23,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<UserResponseDto>> createUser(@Valid @RequestBody CreateUserDto createUserDto) {
+    public ResponseEntity<ApiResponse<UserResponseDto>> createUser(
+            @Valid @RequestBody CreateUserDto createUserDto) {
         UserResponseDto userResponse = userService.createUser(createUserDto);
         ApiResponse<UserResponseDto> response = ApiResponse.success(userResponse, "User created successfully");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -47,7 +48,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<UserResponseDto>> updateUserById(
             @PathVariable("id") String id,
-            @RequestBody UpdateUserDto updateUserDto) {
+            @Valid @RequestBody UpdateUserDto updateUserDto) {
 
         UserResponseDto updatedUser = userService.updateUserById(id, updateUserDto);
         ApiResponse<UserResponseDto> response = ApiResponse.success(updatedUser, "User updated successfully");
