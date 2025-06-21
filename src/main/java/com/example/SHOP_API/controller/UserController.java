@@ -5,6 +5,7 @@ import com.example.SHOP_API.controller.dto.UpdateUserDto;
 import com.example.SHOP_API.controller.dto.response.ApiResponse;
 import com.example.SHOP_API.controller.dto.response.UserResponseDto;
 import com.example.SHOP_API.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<UserResponseDto>> createUser(@RequestBody CreateUserDto createUserDto) {
+    public ResponseEntity<ApiResponse<UserResponseDto>> createUser(@Valid @RequestBody CreateUserDto createUserDto) {
         UserResponseDto userResponse = userService.createUser(createUserDto);
         ApiResponse<UserResponseDto> response = ApiResponse.success(userResponse, "User created successfully");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

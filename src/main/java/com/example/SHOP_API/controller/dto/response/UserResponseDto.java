@@ -46,8 +46,8 @@ public record UserResponseDto(
                 user.isAdmin(),
                 user.getBirthDate(),
                 user.getGender(),
-                user.isPhone_verified(),
-                user.isEmail_verified(),
+                user.isPhoneVerified(),
+                user.isEmailVerified(),
                 user.getStatus(),
                 user.getCreationTimestamp(),
                 user.getUpdateTimestamp()
@@ -72,8 +72,8 @@ public record UserResponseDto(
                 user.isAdmin(),
                 null, // birthDate oculto
                 null, // gender oculto
-                user.isPhone_verified(),
-                user.isEmail_verified(),
+                user.isPhoneVerified(),
+                user.isEmailVerified(),
                 user.getStatus(),
                 user.getCreationTimestamp(),
                 user.getUpdateTimestamp()
