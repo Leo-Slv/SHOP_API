@@ -6,6 +6,7 @@ import com.example.SHOP_API.controller.dto.response.UserResponseDto;
 import com.example.SHOP_API.entity.User;
 import com.example.SHOP_API.exception.UserNotFoundException;
 import com.example.SHOP_API.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -16,19 +17,25 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder; // ← NOVO!
 
-    public UserService(UserRepository userRepository) {
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserResponseDto createUser(CreateUserDto createUserDto) {
+
+        String hashedPassword = passwordEncoder.encode(createUserDto.password());
+
         var entity = new User(
                 UUID.randomUUID(),
                 createUserDto.username(),
                 createUserDto.surname(),
                 createUserDto.email(),
                 createUserDto.telephone(),
-                createUserDto.password(),
+                hashedPassword,
                 createUserDto.cpf(),
                 createUserDto.cep(),
                 createUserDto.state(),
@@ -36,12 +43,12 @@ public class UserService {
                 createUserDto.neighborhood(),
                 createUserDto.street(),
                 createUserDto.number(),
-                false, // isAdmin sempre false para novos usuários
+                false,
                 createUserDto.birthDate(),
                 createUserDto.gender(),
-                false, // phone_verified inicialmente false
-                false, // email_verified inicialmente false
-                "ACTIVE", // status padrão como ACTIVE
+                false,
+                false,
+                "ACTIVE",
                 Instant.now(),
                 null
         );
@@ -59,7 +66,7 @@ public class UserService {
     public List<UserResponseDto> listUsers() {
         return userRepository.findAll()
                 .stream()
-                .map(UserResponseDto::fromEntityPublic) // Usa versão pública para listagem
+                .map(UserResponseDto::fromEntityPublic)
                 .toList();
     }
 
@@ -68,16 +75,19 @@ public class UserService {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(id, "id"));
 
-        // Atualiza apenas campos não nulos do UpdateUserDto
+        // Campos normais...
         if (updateUserDto.username() != null) {
             user.setUsername(updateUserDto.username());
         }
         if (updateUserDto.surname() != null) {
             user.setSurname(updateUserDto.surname());
         }
+
         if (updateUserDto.password() != null) {
-            user.setPassword(updateUserDto.password());
+            String hashedPassword = passwordEncoder.encode(updateUserDto.password());
+            user.setPassword(hashedPassword);
         }
+
         if (updateUserDto.cep() != null) {
             user.setCep(updateUserDto.cep());
         }
@@ -103,7 +113,6 @@ public class UserService {
             user.setGender(updateUserDto.gender());
         }
 
-        // Atualiza automaticamente o timestamp de atualização (se usando @UpdateTimestamp)
         var updatedUser = userRepository.save(user);
         return UserResponseDto.fromEntity(updatedUser);
     }
@@ -114,5 +123,24 @@ public class UserService {
             throw new UserNotFoundException(id, "id");
         }
         userRepository.deleteById(userId);
+    }
+
+    public boolean verifyPassword(String rawPassword, String hashedPassword) {
+        return passwordEncoder.matches(rawPassword, hashedPassword);
+    }
+
+    public UserResponseDto authenticateUser(String email, String rawPassword) {
+        // TODO: Implementar findByEmail no UserRepository
+        // User user = userRepository.findByEmail(email)
+        //         .orElseThrow(() -> new UserNotFoundException(email, "email"));
+        //
+        // if (passwordEncoder.matches(rawPassword, user.getPassword())) {
+        //     return UserResponseDto.fromEntity(user);
+        // } else {
+        //     throw new InvalidCredentialsException("Invalid password");
+        // }
+
+        // Por enquanto retorna null - implementar quando necessário
+        return null;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.SHOP_API.controller.dto.response;
 
+import com.example.SHOP_API.entity.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -29,7 +30,7 @@ public record UserResponseDto(
         Instant updateTimestamp
 ) {
     // Método para converter de Entity para DTO (NUNCA inclui password por segurança)
-    public static UserResponseDto fromEntity(com.example.SHOP_API.entity.User user) {
+    public static UserResponseDto fromEntity(User user) {
         return new UserResponseDto(
                 user.getId(),
                 user.getUsername(),
@@ -55,7 +56,7 @@ public record UserResponseDto(
     }
 
     // Versão sem dados sensíveis para listagem pública
-    public static UserResponseDto fromEntityPublic(com.example.SHOP_API.entity.User user) {
+    public static UserResponseDto fromEntityPublic( User user) {
         return new UserResponseDto(
                 user.getId(),
                 user.getUsername(),
