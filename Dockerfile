@@ -31,7 +31,7 @@ RUN apk add --no-cache netcat-openbsd
 # Copiar JAR
 COPY --from=build /app/target/SHOP-API-0.0.1-SNAPSHOT.jar app.jar
 
-# Script para aguardar postgres na porta 5433
+# Script para aguardar postgres na porta 5432
 RUN echo '#!/bin/sh' > wait-for-postgres.sh && \
     echo 'echo "Aguardando PostgreSQL..."' >> wait-for-postgres.sh && \
     echo 'while ! nc -z postgres 5433; do' >> wait-for-postgres.sh && \
