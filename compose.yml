@@ -8,10 +8,10 @@ services:
       - 'POSTGRES_DB=shop_api'
       - 'POSTGRES_PASSWORD=Db@User2025!'
     ports:
-      - '5433:5433'  # Porta 5433 tanto no host quanto no container
+      - '5432:5432'  # Porta 5433 tanto no host quanto no container
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    command: postgres -p 5433  # Força PostgreSQL a rodar na porta 5433
+    command: postgres -p 5432  # Força PostgreSQL a rodar na porta 5433
     networks:
       - shop-network
 
@@ -23,7 +23,7 @@ services:
     depends_on:
       - postgres
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5433/shop_api
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/shop_api
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=Db@User2025!
     networks:
