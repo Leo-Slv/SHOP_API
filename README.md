@@ -49,6 +49,43 @@ O **SHOP API** é um sistema backend moderno para e-commerce que oferece funcion
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
+
+### Visão Detalhada do Sistema
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    E-commerce System Context                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  [Customer]                                                     │
+│     │                                                           │
+│     │ Browse products, manage cart,                             │
+│     │ place orders, manage profile                              │
+│     ▼                                                           │
+│  ┌─────────────────────────────────────┐                        │
+│  │                                     │                        │
+│  │      SHOP_API E-commerce           │                         │
+│  │         Platform                    │                        │
+│  │                                     │                        │
+│  │  • User Management ✅               │                       │
+│  │  • Product Catalog                  │                        │
+│  │  • Shopping Cart                    │                        │
+│  │  • Order Management                 │                        │
+│  │  • Inventory Control                │                        │
+│  │                                     │                        │ 
+│  └─────────────────────────────────────┘                        │
+│     │                    │                                      │
+│     │                    │                                      │
+│     ▼                    ▼                                      │
+│  [PostgreSQL]        [Payment Gateway]                          │ 
+│   Database             (Stripe/PayPal)                          │
+│                                                                 │
+│  [Admin User] ───────────────────────────────────────────────▶ |
+│   Manages products, orders, users                               │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
 ### Padrões Implementados
 
 - **MVC (Model-View-Controller)** - Organização da aplicação
@@ -97,6 +134,28 @@ O **SHOP API** é um sistema backend moderno para e-commerce que oferece funcion
 - **Dados Sensíveis**: Exclusão automática de passwords nos responses
 - **UUIDs**: Identificadores únicos seguros
 - **Constraints**: Validações de integridade no banco
+
+## 🗺️ Roadmap de Desenvolvimento
+
+### Sprint 1 - Produtos (2 semanas)
+- [ ] Product Entity + Repository + Service + Controller
+- [ ] Category Management
+- [ ] Image Upload Support
+
+### Sprint 2 - Carrinho (1 semana)  
+- [ ] Cart functionality
+- [ ] Stock validation
+- [ ] Cart persistence
+
+### Sprint 3 - Pedidos (2 semanas)
+- [ ] Order processing
+- [ ] Payment integration
+- [ ] Order tracking
+
+### Sprint 4 - Extras (1 semana)
+- [ ] Admin dashboard
+- [ ] Email notifications
+- [ ] Advanced search
 
 ## 🚀 Instalação e Execução
 
